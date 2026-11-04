@@ -105,8 +105,7 @@
     <!-- 頁尾 -->
     <footer class="bg-white border-top py-4 mt-5 text-center text-muted">
         <div class="container">
-            <p class="mb-1">資料庫系統專案 - 教室借用系統</p>
-            <small>組別：第八組 | 01357010 石智宇 &nbsp;|&nbsp; 01357015 王傑民</small>
+            <p class="mb-0">教室借用系統</p>
         </div>
     </footer>
 

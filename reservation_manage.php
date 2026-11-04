@@ -148,7 +148,7 @@
     <!-- 頁尾 -->
     <footer class="bg-white border-top py-4 mt-5 text-center text-muted">
         <div class="container">
-            <small>教室借用系統 | 第八組（石智宇、王傑民）</small>
+            <small>教室借用系統</small>
         </div>
     </footer>
 
