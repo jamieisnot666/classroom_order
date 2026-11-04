@@ -57,7 +57,7 @@ git push -u origin main
 ### 步驟 3：另一位組員下載專案
 另一位組員在自己電腦的終端機輸入：
 ```bash
-git clone https://github.com/<GitHub帳號>/<儲存庫名稱>.git
+git clone https://github.com/jamieisnot666/classroom_order.git
 ```
 
 ### 步驟 4：日常共編流程
