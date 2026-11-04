@@ -2,7 +2,7 @@ import os
 from docx import Document
 from docx.shared import Inches, Pt, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.enum.table import WD_TABLE_ALIGNMENT, WD_ALIGN_VERTICAL
+from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 
@@ -17,16 +17,16 @@ def set_cell_background(cell, fill_hex):
 def create_report():
     doc = Document()
 
-    # 設定邊界
+    # 設定邊界為標準邊界 (上下左右各 2 公分 / 0.8 英吋，空間更充裕)
     for section in doc.sections:
-        section.top_margin = Inches(1)
-        section.bottom_margin = Inches(1)
-        section.left_margin = Inches(1)
-        section.right_margin = Inches(1)
+        section.top_margin = Inches(0.8)
+        section.bottom_margin = Inches(0.8)
+        section.left_margin = Inches(0.8)
+        section.right_margin = Inches(0.8)
 
-    # 封面
+    # ==================== 第 1 頁：封面 ====================
     p_cover_space = doc.add_paragraph()
-    p_cover_space.paragraph_format.space_before = Pt(140)
+    p_cover_space.paragraph_format.space_before = Pt(150)
 
     p_title = doc.add_paragraph()
     p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -39,39 +39,36 @@ def create_report():
     p_eng.alignment = WD_ALIGN_PARAGRAPH.CENTER
     run_eng = p_eng.add_run("Classroom Reservation System")
     run_eng.font.name = "Arial"
-    run_eng.font.size = Pt(20)
+    run_eng.font.size = Pt(18)
     run_eng.font.bold = True
-    p_eng.paragraph_format.space_after = Pt(150)
+    p_eng.paragraph_format.space_after = Pt(160)
 
     p_info = doc.add_paragraph()
     p_info.alignment = WD_ALIGN_PARAGRAPH.CENTER
     run_group = p_info.add_run("組別：第八組\n\n組員學號姓名：01357010 石智宇\n組員學號姓名：01357015 王傑民")
     run_group.font.name = "Microsoft JhengHei"
-    run_group.font.size = Pt(14)
+    run_group.font.size = Pt(13)
     run_group.font.bold = True
 
     doc.add_page_break()
 
-    # 一、系統功能介紹
+    # ==================== 第 2 頁：一、功能介紹 & 二、DDL (全收納) ====================
     h1 = doc.add_heading("一、系統功能介紹", level=1)
-    h1.style.font.name = "Microsoft JhengHei"
     p_func = doc.add_paragraph(
-        "本系統主要提供使用者查詢教室資訊及進行教室借用。使用者可以查詢目前系統中的教室資料，並新增自己的教室借用紀錄。\n\n"
-        "系統也提供管理功能，可以查看目前所有借用紀錄，並修改借用狀態或刪除借用資料。\n\n"
+        "本系統主要提供使用者查詢教室資訊及進行教室借用。使用者可以查詢目前系統中的教室資料，並新增自己的教室借用紀錄。\n"
+        "系統也提供管理功能，可以查看目前所有借用紀錄，並修改借用狀態或刪除借用資料。\n"
         "為了簡化系統，本系統假設每一筆借用紀錄只對應一位使用者及一間教室。"
     )
-    p_func.paragraph_format.line_spacing = 1.3
-    p_func.paragraph_format.space_after = Pt(16)
+    p_func.paragraph_format.line_spacing = 1.2
+    p_func.paragraph_format.space_after = Pt(10)
 
-    # 二、SQL DDL 和範例資料
     h2 = doc.add_heading("二、SQL DDL 和範例資料", level=1)
-    
-    # user 表格
-    p_u_title = doc.add_paragraph()
-    run_u = p_u_title.add_run("user 表格")
-    run_u.font.bold = True
-    run_u.font.size = Pt(13)
 
+    # 1. user 表格
+    p_u = doc.add_paragraph()
+    r = p_u.add_run("1. user 表格")
+    r.bold = True
+    p_u.paragraph_format.space_after = Pt(2)
     p_ddl1 = doc.add_paragraph(
         "CREATE TABLE user (\n"
         "    user_id varchar(10) NOT NULL,\n"
@@ -79,36 +76,28 @@ def create_report():
         "    PRIMARY KEY (user_id)\n"
         ");"
     )
-    p_ddl1.paragraph_format.space_after = Pt(8)
+    p_ddl1.paragraph_format.space_after = Pt(4)
 
     t_user = doc.add_table(rows=4, cols=2)
     t_user.alignment = WD_TABLE_ALIGNMENT.CENTER
-    headers = ["user_id", "user_name"]
-    for i, h in enumerate(headers):
+    for i, h in enumerate(["user_id", "user_name"]):
         cell = t_user.cell(0, i)
         cell.text = h
         set_cell_background(cell, "E0E7FF")
-    user_data = [
-        ["U001", "王小明"],
-        ["U002", "陳怡君"],
-        ["U003", "林志豪"]
-    ]
-    for row_idx, row in enumerate(user_data, start=1):
-        for col_idx, val in enumerate(row):
-            t_user.cell(row_idx, col_idx).text = val
+    user_data = [["U001", "王小明"], ["U002", "陳怡君"], ["U003", "林志豪"]]
+    for r_idx, row in enumerate(user_data, start=1):
+        for c_idx, val in enumerate(row):
+            t_user.cell(r_idx, c_idx).text = val
 
-    p_u_desc = doc.add_paragraph(
-        "\n[user_id] 記錄使用者的編號，為 Primary Key。\n"
-        "[user_name] 記錄使用者的姓名。"
-    )
-    p_u_desc.paragraph_format.space_after = Pt(16)
+    p_u_desc = doc.add_paragraph("[user_id] 記錄使用者的編號，為 Primary Key。  [user_name] 記錄使用者的姓名。")
+    p_u_desc.paragraph_format.space_before = Pt(3)
+    p_u_desc.paragraph_format.space_after = Pt(8)
 
-    # classroom 表格
-    p_c_title = doc.add_paragraph()
-    run_c = p_c_title.add_run("classroom 表格")
-    run_c.font.bold = True
-    run_c.font.size = Pt(13)
-
+    # 2. classroom 表格
+    p_c = doc.add_paragraph()
+    r = p_c.add_run("2. classroom 表格")
+    r.bold = True
+    p_c.paragraph_format.space_after = Pt(2)
     p_ddl2 = doc.add_paragraph(
         "CREATE TABLE classroom (\n"
         "    classroom_id varchar(10) NOT NULL,\n"
@@ -117,37 +106,28 @@ def create_report():
         "    PRIMARY KEY (classroom_id)\n"
         ");"
     )
-    p_ddl2.paragraph_format.space_after = Pt(8)
+    p_ddl2.paragraph_format.space_after = Pt(4)
 
     t_class = doc.add_table(rows=4, cols=3)
     t_class.alignment = WD_TABLE_ALIGNMENT.CENTER
-    c_headers = ["classroom_id", "classroom_name", "capacity"]
-    for i, h in enumerate(c_headers):
+    for i, h in enumerate(["classroom_id", "classroom_name", "capacity"]):
         cell = t_class.cell(0, i)
         cell.text = h
         set_cell_background(cell, "E0E7FF")
-    class_data = [
-        ["C101", "E1-101", "50"],
-        ["C102", "E1-102", "40"],
-        ["C201", "E2-201", "80"]
-    ]
-    for row_idx, row in enumerate(class_data, start=1):
-        for col_idx, val in enumerate(row):
-            t_class.cell(row_idx, col_idx).text = val
+    class_data = [["C101", "E1-101", "50"], ["C102", "E1-102", "40"], ["C201", "E2-201", "80"]]
+    for r_idx, row in enumerate(class_data, start=1):
+        for c_idx, val in enumerate(row):
+            t_class.cell(r_idx, c_idx).text = val
 
-    p_c_desc = doc.add_paragraph(
-        "\n[classroom_id] 記錄教室編號，為 Primary Key。\n"
-        "[classroom_name] 記錄教室名稱。\n"
-        "[capacity] 記錄教室可容納的人數。"
-    )
-    p_c_desc.paragraph_format.space_after = Pt(16)
+    p_c_desc = doc.add_paragraph("[classroom_id] 教室編號(PK)。  [classroom_name] 教室名稱。  [capacity] 可容納人數。")
+    p_c_desc.paragraph_format.space_before = Pt(3)
+    p_c_desc.paragraph_format.space_after = Pt(8)
 
-    # reservation 表格
-    p_r_title = doc.add_paragraph()
-    run_r = p_r_title.add_run("reservation 表格")
-    run_r.font.bold = True
-    run_r.font.size = Pt(13)
-
+    # 3. reservation 表格
+    p_r = doc.add_paragraph()
+    r = p_r.add_run("3. reservation 表格")
+    r.bold = True
+    p_r.paragraph_format.space_after = Pt(2)
     p_ddl3 = doc.add_paragraph(
         "CREATE TABLE reservation (\n"
         "    reservation_id int NOT NULL,\n"
@@ -160,12 +140,11 @@ def create_report():
         "    FOREIGN KEY (classroom_id) REFERENCES classroom(classroom_id)\n"
         ");"
     )
-    p_ddl3.paragraph_format.space_after = Pt(8)
+    p_ddl3.paragraph_format.space_after = Pt(4)
 
     t_res = doc.add_table(rows=4, cols=5)
     t_res.alignment = WD_TABLE_ALIGNMENT.CENTER
-    r_headers = ["reservation_id", "user_id", "classroom_id", "reservation_date", "status"]
-    for i, h in enumerate(r_headers):
+    for i, h in enumerate(["reservation_id", "user_id", "classroom_id", "reservation_date", "status"]):
         cell = t_res.cell(0, i)
         cell.text = h
         set_cell_background(cell, "E0E7FF")
@@ -174,36 +153,31 @@ def create_report():
         ["2", "U002", "C102", "2026-11-11", "pending"],
         ["3", "U001", "C201", "2026-11-15", "approved"]
     ]
-    for row_idx, row in enumerate(res_data, start=1):
-        for col_idx, val in enumerate(row):
-            t_res.cell(row_idx, col_idx).text = val
+    for r_idx, row in enumerate(res_data, start=1):
+        for c_idx, val in enumerate(row):
+            t_res.cell(r_idx, c_idx).text = val
 
-    p_r_desc = doc.add_paragraph(
-        "\n[reservation_id] 記錄每一筆借用資料的編號，為 Primary Key。\n"
-        "[user_id] 記錄借用人的使用者編號，為 Foreign Key。\n"
-        "[classroom_id] 記錄被借用的教室編號，為 Foreign Key。\n"
-        "[reservation_date] 記錄教室借用日期。\n"
-        "[status] 記錄目前的借用狀態，例如 pending、approved。"
-    )
+    p_r_desc = doc.add_paragraph("[reservation_id] 借用編號(PK)。 [user_id] 使用者編號(FK)。 [classroom_id] 教室編號(FK)。 [reservation_date] 日期。 [status] 狀態。")
+    p_r_desc.paragraph_format.space_before = Pt(3)
 
     doc.add_page_break()
 
-    # 三、SQL DML
+    # ==================== 第 3 頁：三、SQL DML ====================
     doc.add_heading("三、SQL DML", level=1)
     
     dmls = [
         ("顯示所有教室資訊", "SELECT *\nFROM classroom;", None),
-        ("顯示借用紀錄、借用人姓名及教室名稱",
+        ("顯示借用紀錄、借用人姓名及教室名稱 (JOIN 查詢)",
          "SELECT U.user_name, C.classroom_name, R.reservation_date, R.status\n"
          "FROM reservation AS R\n"
          "JOIN user AS U ON R.user_id = U.user_id\n"
          "JOIN classroom AS C ON R.classroom_id = C.classroom_id;",
-         "此查詢使用 JOIN 將 reservation、user 與 classroom 三個表格連接，可以顯示每一筆借用紀錄所對應的使用者及教室資料。"),
-        ("統計每間教室的借用次數",
+         "使用 JOIN 連接 reservation、user 與 classroom 三個表格，顯示借用紀錄對應的使用者及教室。"),
+        ("統計每間教室的借用次數 (Aggregate Function 查詢)",
          "SELECT classroom_id, COUNT(*) AS reservation_count\n"
          "FROM reservation\n"
          "GROUP BY classroom_id;",
-         "此查詢使用 aggregate function COUNT() 統計每間教室目前共有多少筆借用紀錄。"),
+         "使用 aggregate function COUNT() 搭配 GROUP BY 統計每間教室借用次數。"),
         ("新增教室借用紀錄",
          "INSERT INTO reservation (reservation_id, user_id, classroom_id, reservation_date, status)\n"
          "VALUES (4, 'U003', 'C101', '2026-11-20', 'pending');", None),
@@ -220,34 +194,31 @@ def create_report():
         p_t = doc.add_paragraph()
         run = p_t.add_run(title)
         run.bold = True
-        run.font.size = Pt(11.5)
+        run.font.size = Pt(11)
+        p_t.paragraph_format.space_before = Pt(4)
+        p_t.paragraph_format.space_after = Pt(2)
         
         p_s = doc.add_paragraph(sql)
         p_s.paragraph_format.left_indent = Inches(0.2)
-        p_s.paragraph_format.space_after = Pt(4)
+        p_s.paragraph_format.space_after = Pt(2)
         
         if note:
             p_n = doc.add_paragraph(note)
-            p_n.paragraph_format.space_after = Pt(10)
+            p_n.paragraph_format.space_after = Pt(6)
         else:
-            p_s.paragraph_format.space_after = Pt(10)
+            p_s.paragraph_format.space_after = Pt(6)
 
     doc.add_page_break()
 
-    # 四、網站結構
+    # ==================== 第 4 頁：四、網站結構 (含精美彩色樹狀圖) ====================
     doc.add_heading("四、網站結構", level=1)
-    p_arch = doc.add_paragraph(
-        "index.php\n"
-        "│\n"
-        "├── classroom.php\n"
-        "│\n"
-        "├── reservation.php\n"
-        "│    └── reservation_add.php\n"
-        "│\n"
-        "└── reservation_manage.php\n"
-    )
-    p_arch.paragraph_format.left_indent = Inches(0.2)
-    p_arch.paragraph_format.space_after = Pt(12)
+    
+    sitemap_path = r"C:\Users\USER\Desktop\程式用\資料庫系統\screenshots\sitemap.png"
+    if os.path.exists(sitemap_path):
+        doc.add_picture(sitemap_path, width=Inches(6.2))
+        p_sm_c = doc.add_paragraph("圖：教室借用系統網站階層架構樹狀圖 (Site Map)")
+        p_sm_c.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        p_sm_c.paragraph_format.space_after = Pt(8)
 
     arch_desc = [
         "1. index.php 為教室借用系統首頁，可以進入教室查詢及借用相關功能。",
@@ -258,39 +229,76 @@ def create_report():
     ]
     for item in arch_desc:
         p_item = doc.add_paragraph(item)
-        p_item.paragraph_format.space_after = Pt(4)
+        p_item.paragraph_format.space_after = Pt(3)
 
     doc.add_page_break()
 
-    # 五、畫面設計 (含5張圖片)
+    # ==================== 第 5 頁：畫面設計 1 & 2 ====================
     doc.add_heading("五、畫面設計", level=1)
     
     img_dir = r"C:\Users\USER\Desktop\程式用\資料庫系統\screenshots"
-    screens = [
-        ("1. 首頁 (index.php)", os.path.join(img_dir, "1_index.png"), "首頁提供系統簡介與四大核心功能入口（查詢教室、查看借用紀錄、新增借用、借用管理）。"),
-        ("2. 教室查詢頁面 (classroom.php)", os.path.join(img_dir, "2_classroom.png"), "顯示系統內所有教室的編號、教室名稱與容納人數，並提供關鍵字即時搜尋功能。"),
-        ("3. 借用紀錄頁面 (reservation.php)", os.path.join(img_dir, "3_reservation.png"), "顯示目前登記之借用排程、借用人姓名、教室與狀態，並包含各教室借用次數統計卡片。"),
-        ("4. 新增借用頁面 (reservation_add.php)", os.path.join(img_dir, "4_reservation_add.png"), "提供使用者選擇借用人 (user_id)、預約教室 (classroom_id) 與借用日期 (reservation_date) 之表單。"),
-        ("5. 借用管理頁面 (reservation_manage.php)", os.path.join(img_dir, "5_reservation_manage.png"), "管理員專用後台，可直接點擊按鈕更新借用審核狀態 (UPDATE) 或刪除無效紀錄 (DELETE)。")
-    ]
 
-    for title, img_path, desc in screens:
-        p_st = doc.add_paragraph()
-        run = p_st.add_run(title)
-        run.bold = True
-        run.font.size = Pt(12)
-        p_st.paragraph_format.space_before = Pt(8)
-        p_st.paragraph_format.space_after = Pt(4)
+    # 1. 首頁
+    p_s1 = doc.add_paragraph()
+    r = p_s1.add_run("1. 首頁 (index.php)")
+    r.bold = True
+    p_s1.paragraph_format.space_after = Pt(2)
+    doc.add_picture(os.path.join(img_dir, "1_index.png"), width=Inches(5.8))
+    p_d1 = doc.add_paragraph("首頁顯示系統名稱「教室借用系統」，並提供四大主要功能模組卡片。")
+    p_d1.paragraph_format.space_after = Pt(12)
 
-        if os.path.exists(img_path):
-            doc.add_picture(img_path, width=Inches(6.2))
-        
-        p_sd = doc.add_paragraph(desc)
-        p_sd.paragraph_format.space_after = Pt(14)
+    # 2. 教室查詢
+    p_s2 = doc.add_paragraph()
+    r = p_s2.add_run("2. 教室查詢頁面 (classroom.php)")
+    r.bold = True
+    p_s2.paragraph_format.space_after = Pt(2)
+    doc.add_picture(os.path.join(img_dir, "2_classroom.png"), width=Inches(5.8))
+    p_d2 = doc.add_paragraph("顯示開放教室的編號、教室名稱與容納人數，並提供即時搜尋功能。")
 
     doc.add_page_break()
 
-    # 六、工作分配
+    # ==================== 第 6 頁：畫面設計 3 & 4 ====================
+    p_h5_2 = doc.add_paragraph()
+    r = p_h5_2.add_run("五、畫面設計（續）")
+    r.bold = True
+    r.font.size = Pt(14)
+    p_h5_2.paragraph_format.space_after = Pt(4)
+
+    # 3. 借用紀錄
+    p_s3 = doc.add_paragraph()
+    r = p_s3.add_run("3. 借用紀錄頁面 (reservation.php)")
+    r.bold = True
+    p_s3.paragraph_format.space_after = Pt(2)
+    doc.add_picture(os.path.join(img_dir, "3_reservation.png"), width=Inches(5.8))
+    p_d3 = doc.add_paragraph("展示所有借用紀錄與審核狀態（approved、pending），頂部呈現教室借用統計。")
+    p_d3.paragraph_format.space_after = Pt(12)
+
+    # 4. 新增借用
+    p_s4 = doc.add_paragraph()
+    r = p_s4.add_run("4. 新增借用頁面 (reservation_add.php)")
+    r.bold = True
+    p_s4.paragraph_format.space_after = Pt(2)
+    doc.add_picture(os.path.join(img_dir, "4_reservation_add.png"), width=Inches(5.8))
+    p_d4 = doc.add_paragraph("提供借用人編號、預約教室及借用日期填寫表單後送出登記。")
+
+    doc.add_page_break()
+
+    # ==================== 第 7 頁：畫面設計 5 & 六、工作分配 ====================
+    p_h5_3 = doc.add_paragraph()
+    r = p_h5_3.add_run("五、畫面設計（續）")
+    r.bold = True
+    r.font.size = Pt(14)
+    p_h5_3.paragraph_format.space_after = Pt(4)
+
+    # 5. 借用管理
+    p_s5 = doc.add_paragraph()
+    r = p_s5.add_run("5. 借用管理頁面 (reservation_manage.php)")
+    r.bold = True
+    p_s5.paragraph_format.space_after = Pt(2)
+    doc.add_picture(os.path.join(img_dir, "5_reservation_manage.png"), width=Inches(5.8))
+    p_d5 = doc.add_paragraph("管理員後台，提供一鍵修改審核狀態 (UPDATE) 或刪除無效紀錄 (DELETE)。")
+    p_d5.paragraph_format.space_after = Pt(16)
+
     doc.add_heading("六、工作分配", level=1)
     p_work = doc.add_paragraph(
         "組員 A：\n"
@@ -305,12 +313,12 @@ def create_report():
         "● 負責網頁畫面設計\n\n"
         "兩人共同負責系統測試、網站整合及書面報告整理。"
     )
-    p_work.paragraph_format.line_spacing = 1.3
+    p_work.paragraph_format.line_spacing = 1.25
 
     # 存檔
     out_path = r"C:\Users\USER\Desktop\程式用\資料庫系統\教室借用系統_書面報告I.docx"
     doc.save(out_path)
-    print(f"Word 報告成功儲存至: {out_path}")
+    print(f"Compact Word 報告成功儲存至: {out_path}")
 
 if __name__ == '__main__':
     create_report()

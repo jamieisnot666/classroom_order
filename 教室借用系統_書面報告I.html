@@ -5,43 +5,52 @@
     <title>教室借用系統 - 書面報告I</title>
     <style>
         @page {
-            size: A4;
-            margin: 20mm;
+            size: A4 portrait;
+            margin: 15mm 18mm 15mm 18mm;
+        }
+        * {
+            box-sizing: border-box;
         }
         body {
             font-family: "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            color: #333;
-            line-height: 1.6;
+            color: #1f2937;
+            line-height: 1.45;
             margin: 0;
             padding: 20px;
-            background-color: #f3f4f6;
+            background-color: #e5e7eb;
         }
-        .page {
+        .report-page {
             background: white;
-            max-width: 800px;
-            margin: 0 auto 30px auto;
-            padding: 40px 50px;
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto 20px auto;
+            padding: 20mm;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            box-sizing: border-box;
-            border-radius: 4px;
+            position: relative;
         }
         @media print {
-            body { background: white; padding: 0; }
-            .page {
+            body { background: white; padding: 0; margin: 0; }
+            .report-page {
                 box-shadow: none;
                 margin: 0;
                 padding: 0;
+                width: 100%;
+                min-height: auto;
                 page-break-after: always;
-                max-width: 100%;
+                break-after: page;
+            }
+            .report-page:last-child {
+                page-break-after: avoid;
+                break-after: avoid;
             }
             .no-print { display: none !important; }
         }
-        .cover {
-            text-align: center;
-            min-height: 900px;
+        .cover-page {
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
+            text-align: center;
         }
         h1.title {
             font-size: 32px;
@@ -50,52 +59,58 @@
             color: #111827;
         }
         h2.subtitle {
-            font-size: 22px;
+            font-size: 20px;
             color: #4b5563;
             margin-top: 0;
-            margin-bottom: 120px;
+            margin-bottom: 140px;
             font-family: Arial, sans-serif;
         }
         .cover-info {
-            font-size: 18px;
+            font-size: 17px;
             line-height: 2.2;
-            color: #1f2937;
             font-weight: 600;
+            color: #1f2937;
         }
-        h2.section-title {
-            font-size: 20px;
+        h2.sec-title {
+            font-size: 18px;
             border-bottom: 2px solid #2563eb;
-            padding-bottom: 6px;
-            margin-top: 30px;
-            margin-bottom: 16px;
+            padding-bottom: 4px;
+            margin-top: 0;
+            margin-bottom: 12px;
             color: #1e3a8a;
         }
         h3.sub-title {
-            font-size: 16px;
-            margin-top: 20px;
-            margin-bottom: 8px;
-            color: #1f2937;
+            font-size: 14px;
+            margin-top: 10px;
+            margin-bottom: 4px;
+            color: #111827;
+            font-weight: bold;
         }
-        pre.code-block {
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            padding: 12px 16px;
-            font-family: Consolas, Monaco, "Courier New", monospace;
+        p {
             font-size: 13.5px;
-            line-height: 1.45;
-            overflow-x: auto;
+            margin-top: 4px;
+            margin-bottom: 8px;
+        }
+        pre.code-box {
+            background-color: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+            line-height: 1.35;
+            margin: 4px 0 6px 0;
             color: #0f172a;
         }
         table.data-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 12px 0 16px 0;
-            font-size: 14px;
+            margin: 4px 0 6px 0;
+            font-size: 12.5px;
         }
         table.data-table th, table.data-table td {
             border: 1px solid #cbd5e1;
-            padding: 8px 12px;
+            padding: 4px 8px;
             text-align: left;
         }
         table.data-table th {
@@ -104,124 +119,125 @@
             font-weight: bold;
         }
         .note {
-            font-size: 13.5px;
+            font-size: 12px;
             color: #4b5563;
-            margin-bottom: 16px;
-            line-height: 1.5;
+            margin-bottom: 8px;
+            line-height: 1.4;
         }
-        .screenshot-card {
-            margin: 20px 0 30px 0;
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        .img-card {
+            margin: 8px 0 14px 0;
+            text-align: center;
         }
-        .screenshot-card img {
-            width: 100%;
-            height: auto;
+        .img-card img {
+            width: 95%;
+            max-height: 270px;
+            object-fit: contain;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
             display: block;
-            border-bottom: 1px solid #f3f4f6;
+            margin: 0 auto;
         }
-        .screenshot-card .caption {
-            padding: 12px 16px;
-            background-color: #f9fafb;
-            font-size: 14px;
+        .img-card .caption {
+            font-size: 12.5px;
             color: #4b5563;
+            margin-top: 4px;
+        }
+        .sitemap-img {
+            width: 100%;
+            max-height: 310px;
+            object-fit: contain;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            display: block;
+            margin: 0 auto 8px auto;
         }
         .print-btn {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 25px;
+            right: 25px;
             background: #2563eb;
             color: white;
             border: none;
-            padding: 14px 24px;
-            font-size: 16px;
+            padding: 12px 22px;
+            font-size: 15px;
             font-weight: bold;
             border-radius: 30px;
             box-shadow: 0 4px 12px rgba(37,99,235,0.4);
             cursor: pointer;
             z-index: 1000;
         }
-        .print-btn:hover {
-            background: #1d4ed8;
+        .print-btn:hover { background: #1d4ed8; }
+        .tip-banner {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            color: #92400e;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
     </style>
 </head>
 <body>
 
+    <div class="tip-banner no-print">
+        💡 <strong>轉 PDF 小提示：</strong>列印視窗中請點「更多設定」，將<strong>「邊界」設為預設或無</strong>，並<strong>取消勾選「頁首與頁尾」</strong>，畫面最乾淨！
+    </div>
+
     <button class="print-btn no-print" onclick="window.print()">🖨️ 另存為 PDF / 列印</button>
 
     <!-- 第 1 頁：封面 -->
-    <div class="page cover">
+    <div class="report-page cover-page">
         <h1 class="title">教室借用系統</h1>
         <h2 class="subtitle">Classroom Reservation System</h2>
         <div class="cover-info">
             <div>組別：第八組</div>
-            <div style="margin-top: 15px;">組員學號姓名：01357010 石智宇</div>
+            <div style="margin-top: 12px;">組員學號姓名：01357010 石智宇</div>
             <div>組員學號姓名：01357015 王傑民</div>
         </div>
     </div>
 
-    <!-- 第 2 頁：一、系統功能介紹 & 二、DDL -->
-    <div class="page">
-        <h2 class="section-title">一、系統功能介紹</h2>
+    <!-- 第 2 頁：一、系統功能介紹 & 二、SQL DDL (user, classroom, reservation 全部收齊在第2頁) -->
+    <div class="report-page">
+        <h2 class="sec-title">一、系統功能介紹</h2>
         <p>本系統主要提供使用者查詢教室資訊及進行教室借用。使用者可以查詢目前系統中的教室資料，並新增自己的教室借用紀錄。</p>
         <p>系統也提供管理功能，可以查看目前所有借用紀錄，並修改借用狀態或刪除借用資料。</p>
         <p>為了簡化系統，本系統假設每一筆借用紀錄只對應一位使用者及一間教室。</p>
 
-        <h2 class="section-title">二、SQL DDL 和範例資料</h2>
+        <h2 class="sec-title" style="margin-top: 14px;">二、SQL DDL 和範例資料</h2>
         
         <h3 class="sub-title">user 表格</h3>
-        <pre class="code-block">CREATE TABLE user (
+        <pre class="code-box">CREATE TABLE user (
     user_id varchar(10) NOT NULL,
     user_name varchar(50) NOT NULL,
     PRIMARY KEY (user_id)
 );</pre>
         <table class="data-table">
-            <thead>
-                <tr><th>user_id</th><th>user_name</th></tr>
-            </thead>
-            <tbody>
-                <tr><td>U001</td><td>王小明</td></tr>
-                <tr><td>U002</td><td>陳怡君</td></tr>
-                <tr><td>U003</td><td>林志豪</td></tr>
-            </tbody>
+            <thead><tr><th>user_id</th><th>user_name</th></tr></thead>
+            <tbody><tr><td>U001</td><td>王小明</td></tr><tr><td>U002</td><td>陳怡君</td></tr><tr><td>U003</td><td>林志豪</td></tr></tbody>
         </table>
-        <div class="note">
-            <div><strong>[user_id]</strong> 記錄使用者的編號，為 Primary Key。</div>
-            <div><strong>[user_name]</strong> 記錄使用者的姓名。</div>
-        </div>
+        <div class="note"><strong>[user_id]</strong> 記錄使用者的編號，為 Primary Key。 <strong>[user_name]</strong> 記錄使用者的姓名。</div>
 
         <h3 class="sub-title">classroom 表格</h3>
-        <pre class="code-block">CREATE TABLE classroom (
+        <pre class="code-box">CREATE TABLE classroom (
     classroom_id varchar(10) NOT NULL,
     classroom_name varchar(50) NOT NULL,
     capacity int NOT NULL,
     PRIMARY KEY (classroom_id)
 );</pre>
         <table class="data-table">
-            <thead>
-                <tr><th>classroom_id</th><th>classroom_name</th><th>capacity</th></tr>
-            </thead>
-            <tbody>
-                <tr><td>C101</td><td>E1-101</td><td>50</td></tr>
-                <tr><td>C102</td><td>E1-102</td><td>40</td></tr>
-                <tr><td>C201</td><td>E2-201</td><td>80</td></tr>
-            </tbody>
+            <thead><tr><th>classroom_id</th><th>classroom_name</th><th>capacity</th></tr></thead>
+            <tbody><tr><td>C101</td><td>E1-101</td><td>50</td></tr><tr><td>C102</td><td>E1-102</td><td>40</td></tr><tr><td>C201</td><td>E2-201</td><td>80</td></tr></tbody>
         </table>
-        <div class="note">
-            <div><strong>[classroom_id]</strong> 記錄教室編號，為 Primary Key。</div>
-            <div><strong>[classroom_name]</strong> 記錄教室名稱。</div>
-            <div><strong>[capacity]</strong> 記錄教室可容納的人數。</div>
-        </div>
-    </div>
+        <div class="note"><strong>[classroom_id]</strong> 教室編號(PK)。 <strong>[classroom_name]</strong> 教室名稱。 <strong>[capacity]</strong> 可容納人數。</div>
 
-    <!-- 第 3 頁：reservation 表格 & 三、DML -->
-    <div class="page">
         <h3 class="sub-title">reservation 表格</h3>
-        <pre class="code-block">CREATE TABLE reservation (
+        <pre class="code-box">CREATE TABLE reservation (
     reservation_id int NOT NULL,
     user_id varchar(10) NOT NULL,
     classroom_id varchar(10) NOT NULL,
@@ -232,135 +248,122 @@
     FOREIGN KEY (classroom_id) REFERENCES classroom(classroom_id)
 );</pre>
         <table class="data-table">
-            <thead>
-                <tr><th>reservation_id</th><th>user_id</th><th>classroom_id</th><th>reservation_date</th><th>status</th></tr>
-            </thead>
-            <tbody>
-                <tr><td>1</td><td>U001</td><td>C101</td><td>2026-11-10</td><td>approved</td></tr>
-                <tr><td>2</td><td>U002</td><td>C102</td><td>2026-11-11</td><td>pending</td></tr>
-                <tr><td>3</td><td>U001</td><td>C201</td><td>2026-11-15</td><td>approved</td></tr>
-            </tbody>
+            <thead><tr><th>reservation_id</th><th>user_id</th><th>classroom_id</th><th>reservation_date</th><th>status</th></tr></thead>
+            <tbody><tr><td>1</td><td>U001</td><td>C101</td><td>2026-11-10</td><td>approved</td></tr><tr><td>2</td><td>U002</td><td>C102</td><td>2026-11-11</td><td>pending</td></tr><tr><td>3</td><td>U001</td><td>C201</td><td>2026-11-15</td><td>approved</td></tr></tbody>
         </table>
-        <div class="note">
-            <div><strong>[reservation_id]</strong> 記錄每一筆借用資料的編號，為 Primary Key。</div>
-            <div><strong>[user_id]</strong> 記錄借用人的使用者編號，為 Foreign Key。</div>
-            <div><strong>[classroom_id]</strong> 記錄被借用的教室編號，為 Foreign Key。</div>
-            <div><strong>[reservation_date]</strong> 記錄教室借用日期。</div>
-            <div><strong>[status]</strong> 記錄目前的借用狀態，例如 pending、approved。</div>
-        </div>
-
-        <h2 class="section-title">三、SQL DML</h2>
-        <h3 class="sub-title">顯示所有教室資訊</h3>
-        <pre class="code-block">SELECT *
-FROM classroom;</pre>
-
-        <h3 class="sub-title">顯示借用紀錄、借用人姓名及教室名稱</h3>
-        <pre class="code-block">SELECT U.user_name, C.classroom_name,
-       R.reservation_date, R.status
-FROM reservation AS R
-JOIN user AS U
-  ON R.user_id = U.user_id
-JOIN classroom AS C
-  ON R.classroom_id = C.classroom_id;</pre>
-        <div class="note">此查詢使用 JOIN 將 reservation、user 與 classroom 三個表格連接，可以顯示每一筆借用紀錄所對應的使用者及教室資料。</div>
+        <div class="note"><strong>[reservation_id]</strong> 借用編號(PK)。 <strong>[user_id]</strong> 借用人編號(FK)。 <strong>[classroom_id]</strong> 借用教室編號(FK)。 <strong>[reservation_date]</strong> 借用日期。 <strong>[status]</strong> 借用狀態。</div>
     </div>
 
-    <!-- 第 4 頁：DML 續 & 四、網站結構 -->
-    <div class="page">
-        <h3 class="sub-title">統計每間教室的借用次數</h3>
-        <pre class="code-block">SELECT classroom_id, COUNT(*) AS reservation_count
+    <!-- 第 3 頁：三、SQL DML (完整6個操作，剛好填滿第3頁) -->
+    <div class="report-page">
+        <h2 class="sec-title">三、SQL DML</h2>
+        
+        <h3 class="sub-title">顯示所有教室資訊</h3>
+        <pre class="code-box">SELECT *
+FROM classroom;</pre>
+
+        <h3 class="sub-title">顯示借用紀錄、借用人姓名及教室名稱 (JOIN 查詢)</h3>
+        <pre class="code-box">SELECT U.user_name, C.classroom_name, R.reservation_date, R.status
+FROM reservation AS R
+JOIN user AS U ON R.user_id = U.user_id
+JOIN classroom AS C ON R.classroom_id = C.classroom_id;</pre>
+        <div class="note">此查詢使用 JOIN 將 reservation、user 與 classroom 三個表格連接，可以顯示每一筆借用紀錄所對應的使用者及教室資料。</div>
+
+        <h3 class="sub-title">統計每間教室的借用次數 (Aggregate Function 查詢)</h3>
+        <pre class="code-box">SELECT classroom_id, COUNT(*) AS reservation_count
 FROM reservation
 GROUP BY classroom_id;</pre>
-        <div class="note">此查詢使用 aggregate function COUNT() 統計每間教室目前共有多少筆借用紀錄。</div>
+        <div class="note">此查詢使用 aggregate function COUNT() 搭配 GROUP BY 統計每間教室目前共有多少筆借用紀錄。</div>
 
         <h3 class="sub-title">新增教室借用紀錄</h3>
-        <pre class="code-block">INSERT INTO reservation
-(reservation_id, user_id, classroom_id, reservation_date, status)
-VALUES
-(4, 'U003', 'C101', '2026-11-20', 'pending');</pre>
+        <pre class="code-box">INSERT INTO reservation (reservation_id, user_id, classroom_id, reservation_date, status)
+VALUES (4, 'U003', 'C101', '2026-11-20', 'pending');</pre>
 
         <h3 class="sub-title">修改借用狀態</h3>
-        <pre class="code-block">UPDATE reservation
+        <pre class="code-box">UPDATE reservation
 SET status = 'approved'
 WHERE reservation_id = 2;</pre>
 
         <h3 class="sub-title">刪除借用紀錄</h3>
-        <pre class="code-block">DELETE FROM reservation
+        <pre class="code-box">DELETE FROM reservation
 WHERE reservation_id = 3;</pre>
+    </div>
 
-        <h2 class="section-title">四、網站結構</h2>
-        <pre class="code-block">index.php
-│
-├── classroom.php
-│
-├── reservation.php
-│    └── reservation_add.php
-│
-└── reservation_manage.php</pre>
-        <ol style="padding-left: 20px; font-size: 14.5px; line-height: 1.8;">
+    <!-- 第 4 頁：四、網站結構 (彩色樹狀圖 + 說明，剛好填滿第4頁) -->
+    <div class="report-page">
+        <h2 class="sec-title">四、網站結構</h2>
+        <img src="screenshots/sitemap.png" class="sitemap-img" alt="網站階層架構樹狀圖">
+        
+        <ol style="padding-left: 20px; font-size: 13.5px; line-height: 1.7; margin-top: 10px;">
             <li><strong>index.php</strong> 為教室借用系統首頁，可以進入教室查詢及借用相關功能。</li>
-            <li><strong>classroom.php</strong> 提供使用者查詢目前系統內的教室資料。</li>
-            <li><strong>reservation.php</strong> 提供使用者查看目前的借用紀錄。</li>
-            <li><strong>reservation_add.php</strong> 提供使用者新增教室借用資料。</li>
-            <li><strong>reservation_manage.php</strong> 提供管理功能，可以查看、修改及刪除目前的借用紀錄。</li>
+            <li><strong>classroom.php</strong> 提供使用者查詢目前系統內的教室資料與容納人數。</li>
+            <li><strong>reservation.php</strong> 提供使用者查看目前的借用紀錄與審核狀態。</li>
+            <li><strong>reservation_add.php</strong> 提供使用者新增教室借用資料表單。</li>
+            <li><strong>reservation_manage.php</strong> 提供管理功能，可以查看、修改審核狀態及刪除借用紀錄。</li>
         </ol>
     </div>
 
-    <!-- 第 5 頁：五、畫面設計 (1 & 2) -->
-    <div class="page">
-        <h2 class="section-title">五、畫面設計</h2>
+    <!-- 第 5 頁：五、畫面設計 (1. 首頁 + 2. 教室查詢) -->
+    <div class="report-page">
+        <h2 class="sec-title">五、畫面設計</h2>
         
         <h3 class="sub-title">1. 首頁（index.php）</h3>
-        <div class="screenshot-card">
+        <div class="img-card">
             <img src="screenshots/1_index.png" alt="首頁">
             <div class="caption">首頁顯示系統名稱「教室借用系統」，並提供四大主要功能模組卡片：查詢教室、查看借用紀錄、新增借用、借用管理。</div>
         </div>
 
-        <h3 class="sub-title">2. 教室查詢頁面（classroom.php）</h3>
-        <div class="screenshot-card">
+        <h3 class="sub-title" style="margin-top: 15px;">2. 教室查詢頁面（classroom.php）</h3>
+        <div class="img-card">
             <img src="screenshots/2_classroom.png" alt="教室查詢頁面">
             <div class="caption">提供使用者即時檢索系統內所有開放的教室資訊，包含教室編號（C101 等）、教室名稱與容納人數。</div>
         </div>
     </div>
 
-    <!-- 第 6 頁：五、畫面設計 (3 & 4) -->
-    <div class="page">
+    <!-- 第 6 頁：五、畫面設計 (3. 借用紀錄 + 4. 新增借用) -->
+    <div class="report-page">
+        <h2 class="sec-title">五、畫面設計（續）</h2>
+        
         <h3 class="sub-title">3. 借用紀錄頁面（reservation.php）</h3>
-        <div class="screenshot-card">
+        <div class="img-card">
             <img src="screenshots/3_reservation.png" alt="借用紀錄頁面">
             <div class="caption">展示所有借用紀錄與目前狀態（approved 已核准、pending 審核中），頂部並呈現各教室借用次數統計資訊。</div>
         </div>
 
-        <h3 class="sub-title">4. 新增借用頁面（reservation_add.php）</h3>
-        <div class="screenshot-card">
+        <h3 class="sub-title" style="margin-top: 15px;">4. 新增借用頁面（reservation_add.php）</h3>
+        <div class="img-card">
             <img src="screenshots/4_reservation_add.png" alt="新增借用頁面">
-            <div class="caption">使用者可透過下拉選單選擇借用人 (user_id)、欲借用教室 (classroom_id) 及日期選擇器選擇借用日期後提交。</div>
+            <div class="caption">使用者可透過下拉選單選擇借用人 (user_id)、預約教室 (classroom_id) 及日期選擇器選擇借用日期後提交。</div>
         </div>
     </div>
 
-    <!-- 第 7 頁：五、畫面設計 (5) & 六、工作分配 -->
-    <div class="page">
+    <!-- 第 7 頁：五、畫面設計 (5. 借用管理) + 六、工作分配 (剛好完美收納在最後一頁！) -->
+    <div class="report-page">
+        <h2 class="sec-title">五、畫面設計（續）</h2>
+        
         <h3 class="sub-title">5. 借用管理頁面（reservation_manage.php）</h3>
-        <div class="screenshot-card">
+        <div class="img-card">
             <img src="screenshots/5_reservation_manage.png" alt="借用管理頁面">
             <div class="caption">管理員專用後台，提供一鍵修改審核狀態（核准 approve / 改為 pending）與刪除借用資料功能。</div>
         </div>
 
-        <h2 class="section-title">六、工作分配</h2>
-        <div style="font-size: 15px; line-height: 1.8;">
+        <h2 class="sec-title" style="margin-top: 20px;">六、工作分配</h2>
+        <div style="font-size: 13.5px; line-height: 1.6;">
             <p><strong>組員 A：</strong><br>
             ● 建立資料庫<br>
             ● 設計 user、classroom、reservation 三個表格<br>
             ● 撰寫 classroom.php<br>
             ● 撰寫 reservation_add.php</p>
 
-            <p><strong>組員 B：</strong><br>
+            <p style="margin-top: 10px;"><strong>組員 B：</strong><br>
             ● 撰寫 reservation.php<br>
             ● 撰寫 reservation_manage.php<br>
             ● 負責修改與刪除功能<br>
             ● 負責網頁畫面設計</p>
 
-            <p style="margin-top: 20px;"><strong>兩人共同負責系統測試、網站整合及書面報告整理。</strong></p>
+            <p style="margin-top: 12px; font-weight: bold; color: #1e3a8a;">
+                兩人共同負責系統測試、網站整合及書面報告整理。
+            </p>
         </div>
     </div>
 
