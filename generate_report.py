@@ -301,12 +301,12 @@ def create_report():
 
     doc.add_heading("六、工作分配", level=1)
     p_work = doc.add_paragraph(
-        "組員 A：\n"
+        "組員 A（石智宇）：\n"
         "● 建立資料庫\n"
         "● 設計 user、classroom、reservation 三個表格\n"
         "● 撰寫 classroom.php\n"
         "● 撰寫 reservation_add.php\n\n"
-        "組員 B：\n"
+        "組員 B（王傑民）：\n"
         "● 撰寫 reservation.php\n"
         "● 撰寫 reservation_manage.php\n"
         "● 負責修改與刪除功能\n"
